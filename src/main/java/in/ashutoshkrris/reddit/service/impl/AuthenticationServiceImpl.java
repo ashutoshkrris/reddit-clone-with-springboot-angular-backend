@@ -8,6 +8,7 @@ import in.ashutoshkrris.reddit.model.VerificationToken;
 import in.ashutoshkrris.reddit.repository.UserRepository;
 import in.ashutoshkrris.reddit.repository.VerificationTokenRepository;
 import in.ashutoshkrris.reddit.service.AuthenticationService;
+import in.ashutoshkrris.reddit.service.MailService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,7 +24,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final VerificationTokenRepository verificationTokenRepository;
-    private final MailServiceImpl mailService;
+    private final MailService mailService;
 
     @Override
     @Transactional
