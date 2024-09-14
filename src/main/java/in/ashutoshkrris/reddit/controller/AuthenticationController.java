@@ -5,10 +5,7 @@ import in.ashutoshkrris.reddit.service.impl.AuthenticationServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -23,6 +20,10 @@ public class AuthenticationController {
         return new ResponseEntity<>("Sign up successful", HttpStatus.OK);
     }
 
-
+    @GetMapping("/verify/{token}")
+    public ResponseEntity<String> verifyAccount(@PathVariable String token) {
+        authenticationService.verifyAccount(token);
+        return new ResponseEntity<>("Account activated successfully", HttpStatus.OK);
+    }
 
 }

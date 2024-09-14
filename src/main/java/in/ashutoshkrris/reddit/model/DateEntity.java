@@ -17,7 +17,7 @@ public class DateEntity {
     private Long updatedAt;
 
     @Column(columnDefinition = "boolean default false")
-    private Boolean isDeleted;
+    private boolean isDeleted;
 
     @PrePersist
     private void onCreate() {

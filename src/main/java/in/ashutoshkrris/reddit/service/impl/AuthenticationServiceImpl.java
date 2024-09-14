@@ -2,6 +2,7 @@ package in.ashutoshkrris.reddit.service.impl;
 
 import in.ashutoshkrris.reddit.dto.NotificationEmail;
 import in.ashutoshkrris.reddit.dto.SignUpRequestDto;
+import in.ashutoshkrris.reddit.exceptions.RedditException;
 import in.ashutoshkrris.reddit.model.User;
 import in.ashutoshkrris.reddit.model.VerificationToken;
 import in.ashutoshkrris.reddit.repository.UserRepository;
@@ -12,6 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -50,5 +52,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .build();
         verificationTokenRepository.save(verificationToken);
         return token;
+    }
+
+    @Override
+    @Transactional
+    public void verifyAccount(String token) {
+        Optional<VerificationToken> optionalVerificationToken = verificationTokenRepository.findByToken(token);
+        optionalVerificationToken.orElseThrow(() -> new RedditException("Invalid token"));
+        VerificationToken verificationToken = optionalVerificationToken.get();
+        User user = verificationToken.getUser();
+        user.setActive(true);
+        userRepository.save(user);
     }
 }

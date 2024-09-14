@@ -6,4 +6,5 @@ public interface AuthenticationService {
 
     void signUp(SignUpRequestDto signUpRequest);
 
+    void verifyAccount(String token);
 }
