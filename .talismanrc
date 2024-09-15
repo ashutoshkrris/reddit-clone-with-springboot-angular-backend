@@ -1,6 +1,6 @@
 fileignoreconfig:
-- filename: mvnw
-  checksum: 9bd82c104d9f02af78ace97ca594f24fe5595444aac20ee8aa875d4353de7090
 - filename: src/main/resources/application.properties
-  checksum: 0ce723371eb3435b53bc9390b674b990aa29f1685c96d6cabc2fb026c8fd06aa
+  checksum: cb7c1865673020e9d48ea227792c811546074dbe46641802201a7487a5eec502
+- filename: src/main/java/in/ashutoshkrris/reddit/config/WebSecurityConfig.java
+  checksum: 3c2304ea5f56976e5bc52e52b5c5fac1334853878cb98253b9de73c13d7599d0
 version: ""

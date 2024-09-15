@@ -1,5 +1,7 @@
 package in.ashutoshkrris.reddit.service.impl;
 
+import in.ashutoshkrris.reddit.dto.AuthenticationResponseDto;
+import in.ashutoshkrris.reddit.dto.LoginRequestDto;
 import in.ashutoshkrris.reddit.dto.NotificationEmail;
 import in.ashutoshkrris.reddit.dto.SignUpRequestDto;
 import in.ashutoshkrris.reddit.exceptions.RedditException;
@@ -7,10 +9,15 @@ import in.ashutoshkrris.reddit.model.User;
 import in.ashutoshkrris.reddit.model.VerificationToken;
 import in.ashutoshkrris.reddit.repository.UserRepository;
 import in.ashutoshkrris.reddit.repository.VerificationTokenRepository;
+import in.ashutoshkrris.reddit.security.JWTProvider;
 import in.ashutoshkrris.reddit.service.AuthenticationService;
 import in.ashutoshkrris.reddit.service.MailService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +32,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
     private final VerificationTokenRepository verificationTokenRepository;
     private final MailService mailService;
+    private final AuthenticationManager authenticationManager;
+    private final JWTProvider jwtProvider;
 
     @Override
     @Transactional
@@ -64,5 +73,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         User user = verificationToken.getUser();
         user.setActive(true);
         userRepository.save(user);
+    }
+
+    @Override
+    public AuthenticationResponseDto login(LoginRequestDto loginRequest) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtProvider.generateToken(authentication);
+        return AuthenticationResponseDto.builder()
+                .authenticationToken(token)
+                .username(loginRequest.getUsername())
+                .build();
     }
 }

@@ -11,7 +11,8 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "users")
+@Entity
+@Table(name = "users", indexes = {@Index(name = "idx_username", columnList = "username")})
 public class User extends DateEntity {
 
     @Id
@@ -19,6 +20,7 @@ public class User extends DateEntity {
     private Long userId;
 
     @NotBlank(message = "Username is required")
+    @Column(unique = true)
     private String username;
 
     @NotBlank(message = "Password is required")
