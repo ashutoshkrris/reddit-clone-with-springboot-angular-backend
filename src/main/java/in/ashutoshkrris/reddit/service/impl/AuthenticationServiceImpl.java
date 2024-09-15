@@ -12,7 +12,6 @@ import in.ashutoshkrris.reddit.repository.VerificationTokenRepository;
 import in.ashutoshkrris.reddit.security.JWTProvider;
 import in.ashutoshkrris.reddit.service.AuthenticationService;
 import in.ashutoshkrris.reddit.service.MailService;
-import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -65,7 +65,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public void verifyAccount(String token) {
         Optional<VerificationToken> optionalVerificationToken = verificationTokenRepository.findByToken(token);
         optionalVerificationToken.orElseThrow(() -> new RedditException("Invalid token"));
