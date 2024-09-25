@@ -1,27 +1,28 @@
 package in.ashutoshkrris.reddit.mapper;
 
 import in.ashutoshkrris.reddit.dto.SubRedditDto;
+import in.ashutoshkrris.reddit.model.Post;
 import in.ashutoshkrris.reddit.model.SubReddit;
-import org.springframework.stereotype.Component;
+import org.mapstruct.InheritInverseConfiguration;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
-public class SubRedditMapper {
+import java.util.List;
 
-    public SubRedditDto mapSubredditToDto(SubReddit subReddit) {
-        return SubRedditDto.builder()
-                .id(subReddit.getSubRedditId())
-                .name(subReddit.getName())
-                .description(subReddit.getDescription())
-                .numberOfPosts(subReddit.getPosts().size())
-                .build();
+@Mapper(componentModel = "spring")
+public interface SubRedditMapper {
+
+    @Mapping(target = "numberOfPosts", expression = "java(mapPosts(subreddit.getPosts()))")
+    @Mapping(target = "id", source = "subRedditId")
+    SubRedditDto mapSubredditToDto(SubReddit subreddit);
+
+    default Integer mapPosts(List<Post> numberOfPosts) {
+        return numberOfPosts.size();
     }
 
-    public SubReddit mapDtoToSubReddit(SubRedditDto subRedditDto) {
-        return SubReddit.builder()
-                .subRedditId(subRedditDto.getId())
-                .name(subRedditDto.getName())
-                .description(subRedditDto.getDescription())
-                .build();
-    }
+    @InheritInverseConfiguration
+    @Mapping(target = "posts", ignore = true)
+    @Mapping(target = "subRedditId", source = "id")
+    SubReddit mapDtoToSubReddit(SubRedditDto subredditDto);
 
 }
