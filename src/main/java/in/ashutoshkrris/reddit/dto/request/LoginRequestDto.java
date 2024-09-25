@@ -1,4 +1,4 @@
-package in.ashutoshkrris.reddit.dto;
+package in.ashutoshkrris.reddit.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

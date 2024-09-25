@@ -1,9 +1,9 @@
 package in.ashutoshkrris.reddit.service.impl;
 
-import in.ashutoshkrris.reddit.dto.AuthenticationResponseDto;
-import in.ashutoshkrris.reddit.dto.LoginRequestDto;
 import in.ashutoshkrris.reddit.dto.NotificationEmail;
-import in.ashutoshkrris.reddit.dto.SignUpRequestDto;
+import in.ashutoshkrris.reddit.dto.request.LoginRequestDto;
+import in.ashutoshkrris.reddit.dto.request.SignUpRequestDto;
+import in.ashutoshkrris.reddit.dto.response.AuthenticationResponseDto;
 import in.ashutoshkrris.reddit.exceptions.RedditException;
 import in.ashutoshkrris.reddit.model.User;
 import in.ashutoshkrris.reddit.model.VerificationToken;
@@ -17,7 +17,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -84,5 +86,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .authenticationToken(token)
                 .username(loginRequest.getUsername())
                 .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User getCurrentUser() {
+        Jwt principal = (Jwt) SecurityContextHolder.
+                getContext().getAuthentication().getPrincipal();
+        return userRepository.findByUsername(principal.getSubject())
+                .orElseThrow(() -> new UsernameNotFoundException("User name not found - " + principal.getSubject()));
     }
 }

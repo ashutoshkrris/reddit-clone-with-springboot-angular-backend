@@ -1,8 +1,8 @@
 package in.ashutoshkrris.reddit.controller;
 
-import in.ashutoshkrris.reddit.dto.AuthenticationResponseDto;
-import in.ashutoshkrris.reddit.dto.LoginRequestDto;
-import in.ashutoshkrris.reddit.dto.SignUpRequestDto;
+import in.ashutoshkrris.reddit.dto.response.AuthenticationResponseDto;
+import in.ashutoshkrris.reddit.dto.request.LoginRequestDto;
+import in.ashutoshkrris.reddit.dto.request.SignUpRequestDto;
 import in.ashutoshkrris.reddit.service.impl.AuthenticationServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

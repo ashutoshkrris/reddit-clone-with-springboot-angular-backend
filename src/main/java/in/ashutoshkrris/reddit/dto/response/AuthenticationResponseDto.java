@@ -1,4 +1,4 @@
-package in.ashutoshkrris.reddit.dto;
+package in.ashutoshkrris.reddit.dto.response;
 
 import lombok.Builder;
 import lombok.Data;
