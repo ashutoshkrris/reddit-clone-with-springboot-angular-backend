@@ -1,6 +1,6 @@
 package in.ashutoshkrris.reddit.exceptions;
 
-public class PostNotFoundException extends Exception {
+public class PostNotFoundException extends RuntimeException {
 
     public PostNotFoundException(String message) {
         super(message);

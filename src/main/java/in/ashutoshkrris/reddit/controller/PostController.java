@@ -31,7 +31,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public ResponseEntity<PostResponseDto> getPostById(@PathVariable Long postId) throws PostNotFoundException {
+    public ResponseEntity<PostResponseDto> getPostById(@PathVariable Long postId) {
         PostResponseDto post = postService.getById(postId);
         return new ResponseEntity<>(post, HttpStatus.OK);
     }

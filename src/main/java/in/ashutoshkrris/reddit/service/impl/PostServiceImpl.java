@@ -55,7 +55,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public PostResponseDto getById(Long postId) throws PostNotFoundException {
+    public PostResponseDto getById(Long postId) {
         Post post = postRepository.findByPostId(postId).orElseThrow(() -> new PostNotFoundException("No post found with id: " + postId));
         return postMapper.mapPostToResponseDto(post);
     }

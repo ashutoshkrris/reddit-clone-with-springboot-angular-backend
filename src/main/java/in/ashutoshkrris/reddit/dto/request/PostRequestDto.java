@@ -7,7 +7,6 @@ import lombok.*;
 @NoArgsConstructor
 public class PostRequestDto {
 
-    private Long id;
     private String subRedditName;
     private String postName;
     private String url;
