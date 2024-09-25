@@ -35,13 +35,13 @@ public class SubRedditServiceImpl implements SubRedditService {
     public List<SubRedditDto> getAll() {
         return subRedditRepository.findAll()
                 .stream()
-                .map(subRedditMapper::mapSubredditToDto)
+                .map(subRedditMapper::mapSubRedditToDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public SubRedditDto getById(Long subRedditId) {
         SubReddit subReddit = subRedditRepository.findBySubRedditId(subRedditId).orElseThrow(() -> new RedditException("SubReddit not found with id: " + subRedditId));
-        return subRedditMapper.mapSubredditToDto(subReddit);
+        return subRedditMapper.mapSubRedditToDto(subReddit);
     }
 }
