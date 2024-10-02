@@ -2,6 +2,7 @@ package in.ashutoshkrris.reddit.service.impl;
 
 import in.ashutoshkrris.reddit.dto.NotificationEmail;
 import in.ashutoshkrris.reddit.dto.request.LoginRequestDto;
+import in.ashutoshkrris.reddit.dto.request.RefreshTokenRequestDto;
 import in.ashutoshkrris.reddit.dto.request.SignUpRequestDto;
 import in.ashutoshkrris.reddit.dto.response.AuthenticationResponseDto;
 import in.ashutoshkrris.reddit.exceptions.RedditException;
@@ -12,6 +13,7 @@ import in.ashutoshkrris.reddit.repository.VerificationTokenRepository;
 import in.ashutoshkrris.reddit.security.JWTProvider;
 import in.ashutoshkrris.reddit.service.AuthenticationService;
 import in.ashutoshkrris.reddit.service.MailService;
+import in.ashutoshkrris.reddit.service.RefreshTokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +26,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,6 +40,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final MailService mailService;
     private final AuthenticationManager authenticationManager;
     private final JWTProvider jwtProvider;
+    private final RefreshTokenService refreshTokenService;
 
     @Override
     @Transactional
@@ -86,6 +90,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return AuthenticationResponseDto.builder()
                 .authenticationToken(token)
                 .username(loginRequest.getUsername())
+                .refreshToken(refreshTokenService.generateToken().getToken())
+                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
                 .build();
     }
 
@@ -96,5 +102,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 getContext().getAuthentication().getPrincipal();
         return userRepository.findByUsername(principal.getSubject())
                 .orElseThrow(() -> new UsernameNotFoundException("User name not found - " + principal.getSubject()));
+    }
+
+    @Override
+    public AuthenticationResponseDto refreshToken(RefreshTokenRequestDto refreshTokenRequest) {
+        refreshTokenService.validateToken(refreshTokenRequest.getRefreshToken());
+        String token = jwtProvider.generateTokenWithUsername(refreshTokenRequest.getUsername());
+        return AuthenticationResponseDto.builder()
+                .authenticationToken(token)
+                .refreshToken(refreshTokenRequest.getRefreshToken())
+                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
+                .username(refreshTokenRequest.getUsername())
+                .build();
     }
 }

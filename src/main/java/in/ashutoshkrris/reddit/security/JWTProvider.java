@@ -27,7 +27,7 @@ public class JWTProvider {
         return generateTokenWithUsername(principal.getUsername());
     }
 
-    private String generateTokenWithUsername(String username) {
+    public String generateTokenWithUsername(String username) {
         JwtClaimsSet jwtClaimsSet = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(Instant.now())
