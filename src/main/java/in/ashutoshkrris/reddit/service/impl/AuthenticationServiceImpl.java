@@ -13,6 +13,7 @@ import in.ashutoshkrris.reddit.security.JWTProvider;
 import in.ashutoshkrris.reddit.service.AuthenticationService;
 import in.ashutoshkrris.reddit.service.MailService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -70,7 +71,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Transactional(readOnly = true)
     public void verifyAccount(String token) {
         Optional<VerificationToken> optionalVerificationToken = verificationTokenRepository.findByToken(token);
-        optionalVerificationToken.orElseThrow(() -> new RedditException("Invalid token"));
+        optionalVerificationToken.orElseThrow(() -> new RedditException("Invalid token", HttpStatus.BAD_REQUEST));
         VerificationToken verificationToken = optionalVerificationToken.get();
         User user = verificationToken.getUser();
         user.setActive(true);

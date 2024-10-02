@@ -13,6 +13,7 @@ import in.ashutoshkrris.reddit.repository.UserRepository;
 import in.ashutoshkrris.reddit.service.CommentService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +34,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public CommentResponseDto save(CommentRequestDto commentRequest) {
-        Post post = postRepository.findByPostId(commentRequest.getPostId()).orElseThrow(() -> new PostNotFoundException("No post found with id: " + commentRequest.getPostId()));
+        Post post = postRepository.findByPostId(commentRequest.getPostId()).orElseThrow(() -> new PostNotFoundException("No post found with id: " + commentRequest.getPostId(), HttpStatus.NOT_FOUND));
         User user = userRepository.findByUsername(commentRequest.getUsername()).orElseThrow(() -> new UsernameNotFoundException(commentRequest.getUsername()));
         Comment comment = commentMapper.mapRequestDtoToComment(commentRequest, post, user);
         commentRepository.save(comment);
@@ -43,7 +44,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public List<CommentResponseDto> getAllForPost(Long postId) {
-        Post post = postRepository.findByPostId(postId).orElseThrow(() -> new PostNotFoundException("No post found with id: " + postId));
+        Post post = postRepository.findByPostId(postId).orElseThrow(() -> new PostNotFoundException("No post found with id: " + postId, HttpStatus.NOT_FOUND));
         List<Comment> allComments = commentRepository.findAllByPost(post);
         return allComments.stream()
                 .map(commentMapper::mapCommentToResponseDto)

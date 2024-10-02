@@ -8,6 +8,7 @@ import in.ashutoshkrris.reddit.repository.SubRedditRepository;
 import in.ashutoshkrris.reddit.service.SubRedditService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +42,7 @@ public class SubRedditServiceImpl implements SubRedditService {
 
     @Override
     public SubRedditDto getById(Long subRedditId) {
-        SubReddit subReddit = subRedditRepository.findBySubRedditId(subRedditId).orElseThrow(() -> new RedditException("SubReddit not found with id: " + subRedditId));
+        SubReddit subReddit = subRedditRepository.findBySubRedditId(subRedditId).orElseThrow(() -> new RedditException("SubReddit not found with id: " + subRedditId, HttpStatus.NOT_FOUND));
         return subRedditMapper.mapSubRedditToDto(subReddit);
     }
 }

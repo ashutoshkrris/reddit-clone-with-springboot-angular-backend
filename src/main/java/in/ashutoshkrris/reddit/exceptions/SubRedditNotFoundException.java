@@ -1,8 +1,10 @@
 package in.ashutoshkrris.reddit.exceptions;
 
-public class SubRedditNotFoundException extends RuntimeException {
+import org.springframework.http.HttpStatus;
 
-    public SubRedditNotFoundException(String message) {
-        super(message);
+public class SubRedditNotFoundException extends RedditException {
+
+    public SubRedditNotFoundException(String message, HttpStatus httpStatus) {
+        super(message, httpStatus);
     }
 }

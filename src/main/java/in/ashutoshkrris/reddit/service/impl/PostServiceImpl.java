@@ -15,6 +15,7 @@ import in.ashutoshkrris.reddit.service.AuthenticationService;
 import in.ashutoshkrris.reddit.service.PostService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +38,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public PostResponseDto save(PostRequestDto postRequest) {
         SubReddit subReddit = subRedditRepository.findByName(postRequest.getSubRedditName())
-                .orElseThrow(() -> new SubRedditNotFoundException(postRequest.getSubRedditName() + " was not found"));
+                .orElseThrow(() -> new SubRedditNotFoundException(postRequest.getSubRedditName() + " was not found", HttpStatus.NOT_FOUND));
         User currentUser = authenticationService.getCurrentUser();
         Post post = postMapper.mapRequestDtoToPost(postRequest, subReddit, currentUser);
         postRepository.save(post);
@@ -56,14 +57,14 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public PostResponseDto getById(Long postId) {
-        Post post = postRepository.findByPostId(postId).orElseThrow(() -> new PostNotFoundException("No post found with id: " + postId));
+        Post post = postRepository.findByPostId(postId).orElseThrow(() -> new PostNotFoundException("No post found with id: " + postId, HttpStatus.NOT_FOUND));
         return postMapper.mapPostToResponseDto(post);
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<PostResponseDto> getBySubRedditId(Long subRedditId) {
-        SubReddit subReddit = subRedditRepository.findBySubRedditId(subRedditId).orElseThrow(() -> new SubRedditNotFoundException("No SubReddit found with id: " + subRedditId));
+        SubReddit subReddit = subRedditRepository.findBySubRedditId(subRedditId).orElseThrow(() -> new SubRedditNotFoundException("No SubReddit found with id: " + subRedditId, HttpStatus.NOT_FOUND));
         List<Post> allPosts = postRepository.findAllBySubReddit(subReddit);
         return allPosts.stream()
                 .map(postMapper::mapPostToResponseDto)

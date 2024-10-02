@@ -1,8 +1,10 @@
 package in.ashutoshkrris.reddit.exceptions;
 
-public class PostNotFoundException extends RuntimeException {
+import org.springframework.http.HttpStatus;
 
-    public PostNotFoundException(String message) {
-        super(message);
+public class PostNotFoundException extends RedditException {
+
+    public PostNotFoundException(String message, HttpStatus httpStatus) {
+        super(message, httpStatus);
     }
 }
